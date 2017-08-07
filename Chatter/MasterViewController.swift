@@ -12,12 +12,17 @@ class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
     var objects = [Any]()
+    var posts = postArray
     
     @IBAction func cancelToMainMenu(segue: UIStoryboardSegue) {
         
     }
     
     @IBAction func saveNewPost(segue: UIStoryboardSegue) {
+        let newPostViewController = segue.source as! NewPostViewContoller
+        posts.insert(newPostViewController.post, at: 0)
+        let indexpath = NSIndexPath(row: 0, section: 0)
+        tableView.insertRows(at: [indexpath as IndexPath], with: .automatic)
         
     }
 
@@ -46,12 +51,10 @@ class MasterViewController: UITableViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let object = objects[indexPath.row] as! NSDate
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = object
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-                controller.navigationItem.leftItemsSupplementBackButton = true
+            if let indexPath = self.tableView.indexPathForSelectedRow {
+                let object = posts[indexPath.row]
+                
+                (segue.destination as! DetailViewController).detailItem = object 
             }
         }
     }
@@ -63,14 +66,17 @@ class MasterViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
+        return posts.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as! PostCell
 
-        let object = objects[indexPath.row] as! NSDate
-        cell.textLabel!.text = object.description
+        let post = posts[indexPath.row]
+        cell.postTextLabel.text = post.text
+        cell.dateLabel.text = DateFormatter.localizedString (from: post.date as Date, dateStyle: .short, timeStyle: .short)
+        cell.UserNameLabel.text = post.userName
+
         return cell
     }
 
