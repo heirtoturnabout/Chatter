@@ -12,6 +12,14 @@ class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
     var objects = [Any]()
+    
+    @IBAction func cancelToMainMenu(segue: UIStoryboardSegue) {
+        
+    }
+    
+    @IBAction func saveNewPost(segue: UIStoryboardSegue) {
+        
+    }
 
 
     override func viewDidLoad() {
